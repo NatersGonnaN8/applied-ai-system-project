@@ -12,6 +12,8 @@ VibeMatch suggests songs from a small catalog based on a user's preferred genre,
 
 This system is built for classroom exploration only. It assumes the user can express their preferences in simple terms — a favorite genre, a favorite mood, and a rough sense of how high or low energy they want. It is not designed for real production use.
 
+**Not intended for:** production music services, real user data, or any context where a poor recommendation has meaningful consequences. The catalog is too small and the scoring too simple to serve as a real product. It should not be used to make claims about what any real listener would enjoy.
+
 ---
 
 ## 3. How the Model Works
@@ -29,14 +31,14 @@ After every song is scored, they are ranked highest to lowest and the top result
 
 ## 4. Data
 
-The catalog contains 10 songs stored in `data/songs.csv`. Each song has the following attributes: title, artist, genre, mood, energy (0 to 1), tempo in BPM, valence (musical positivity, 0 to 1), danceability (0 to 1), and acousticness (0 to 1).
+The catalog contains 18 songs stored in `data/songs.csv`. Each song has the following attributes: title, artist, genre, mood, energy (0 to 1), tempo in BPM, valence (musical positivity, 0 to 1), danceability (0 to 1), and acousticness (0 to 1).
 
-Genres represented: pop, lofi, rock, ambient, jazz, synthwave, indie pop.
-Moods represented: happy, chill, intense, relaxed, focused, moody.
+The original starter dataset had 10 songs. Eight additional songs were added in Phase 2 to improve genre diversity: hip-hop, R&B, classical, Latin, country, reggae, metal, and k-pop.
 
-The dataset was not modified from the starter — no songs were added or removed.
+Genres represented: pop, lofi, rock, ambient, jazz, synthwave, indie pop, hip-hop, R&B, classical, Latin, country, reggae, metal, k-pop.
+Moods represented: happy, chill, intense, relaxed, focused, moody, hype, romantic, peaceful, festive, melancholic, excited.
 
-There are noticeable gaps. Latin, hip-hop, R&B, classical, and country are entirely absent. The mood vocabulary is small — nuanced states like "nostalgic," "angry," or "romantic" are not represented. The catalog also skews toward Western contemporary styles, which means users whose taste lives outside that space will consistently get poor matches regardless of their stated preferences.
+Some gaps remain. The mood vocabulary still lacks nuanced states like "nostalgic," "angry," or "euphoric." Most genres are represented by only one song, so a user whose preferred genre is anything other than pop or lofi will get a strong #1 result and then fall back on energy-only matches for the rest of their list.
 
 ---
 
@@ -56,7 +58,7 @@ Genre is weighted twice as heavily as mood and significantly more than energy. T
 
 Valence, danceability, and tempo are collected in the dataset but completely ignored in scoring. A user who says they want high energy and gets a high-energy song that is also low valence (emotionally flat) may be disappointed, and the system has no way to account for that.
 
-The 10-song catalog makes ties and thin results likely. A user whose preferred genre does not appear in the catalog (e.g., hip-hop) will never get a genre match and will only be differentiated by energy closeness — which is a weak signal on its own.
+The 18-song catalog makes thin results likely for most genres. With only one song per genre for most categories, a user whose preferred genre does not appear among the top entries will get a strong #1 then fall back on energy-only matches for the rest of their list — which is a weak signal on its own.
 
 The catalog itself reflects a narrow slice of musical culture. If most of the songs represent one demographic's taste, users from other backgrounds will be systematically underserved — not because the algorithm is wrong, but because the data never represented them.
 
@@ -66,14 +68,16 @@ The catalog itself reflects a narrow slice of musical culture. If most of the so
 
 Three user profiles were tested manually:
 
-**Profile 1 — Pop / Happy / High Energy (0.8) / Not Acoustic**
-Results: "Sunrise City" ranked first with a score near 4.0, "Gym Hero" second. Both are genuinely good matches. The system behaved as expected.
+**Profile 1 — Pop / Happy / High Energy (0.85) / Not Acoustic**
+Results: "Sunrise City" ranked first with a score of 3.97, "Gym Hero" second at 2.92. Both are genuinely good matches. The system behaved as expected. Musically this feels right — Sunrise City is an upbeat pop track that actually sounds like what this profile would want.
 
 **Profile 2 — Lofi / Chill / Low Energy (0.35) / Acoustic**
-Results: "Library Rain" and "Midnight Coding" ranked at the top. Both are lofi, chill, and acoustic — a strong match. The acoustic bonus meaningfully separated them from ambient and jazz tracks with similar energy.
+Results: "Library Rain" (4.43) and "Midnight Coding" (4.28) ranked at the top. Both are lofi, chill, and acoustic — a strong match. The acoustic bonus meaningfully separated them from "Spacewalk Thoughts," which has a high acousticness score but is ambient rather than lofi.
 
-**Profile 3 — Jazz / Relaxed / Medium Energy (0.5) / Acoustic**
-Results: "Coffee Shop Stories" ranked first, which is correct. However, after that first match, the fallback results were ambient and lofi tracks — the catalog simply has very few jazz or relaxed-mood songs. The system cannot manufacture diversity that the data does not contain.
+**Profile 3 — Rock / Intense / High Energy (0.92) / Not Acoustic**
+Results: "Storm Runner" ranked first at 3.99, a near-perfect match. After that the list drops to 1.99 — the catalog has only one rock song. Positions 2 and 3 (Gym Hero, Iron Curtain) matched on mood and energy only. The system is confident about #1 but essentially guessing after that.
+
+One notable cross-profile surprise: "Gym Hero" appears second on both the Pop and Rock profiles. It is a pop song with an intense mood and high energy, so it earns a genre match for pop and a mood match for rock. That overlap reveals how a single song can be a strong #2 for two very different listeners when it straddles feature categories — which might feel odd to an actual listener who knows the tracks sound nothing alike.
 
 The two automated tests (sorting correctness and explanation non-emptiness) both pass.
 
@@ -91,6 +95,10 @@ The two automated tests (sorting correctness and explanation non-emptiness) both
 
 ## 9. Personal Reflection
 
-Building this made it concrete how much a recommender depends on the quality and coverage of its data. The scoring logic can be well-designed, but if the catalog does not include songs that match a user's actual taste, no algorithm can fix that. The system is only as good as what it has to work with.
+**Biggest learning moment:** How much a recommender depends on data coverage before the algorithm even matters. The scoring logic can be sound, but a catalog with only one rock song will systemically underserve rock listeners regardless of how well the weights are tuned. No weight adjustment fixes missing data.
 
-It also surfaced how many invisible design decisions go into something that feels simple. Choosing to weight genre twice as heavily as mood is an assumption about human taste — and it might be wrong for many users. Real recommenders at scale face the same problem, just with millions of parameters instead of four. That makes interpretability and the ability to explain "why did you recommend this" much harder to maintain, and much more important to try.
+**Using AI tools:** AI was genuinely useful for generating the expanded CSV quickly — asking it to produce 8 new songs in valid CSV format with diverse genres saved a lot of manual work. Where I had to double-check it was in the scoring logic: the first version it suggested used a raw `energy` difference without clamping, which could have produced negative scores for large gaps. I caught that by tracing a specific example manually before accepting the code.
+
+**What surprised me:** How much the results can "feel" like real recommendations even when the logic is just four arithmetic operations. Running Profile 2 (lofi/chill/acoustic) and seeing Library Rain and Midnight Coding rise to the top felt intuitive — those are genuinely the kind of tracks that profile describes. The system does not know what music sounds like, but the labels and numbers encode enough signal that the output can still feel correct.
+
+**What I'd try next:** Add valence and danceability to the scoring, since right now a high-energy track that feels joyful and one that feels aggressive score identically. That single change would let the system distinguish moods that the current version treats as equivalent.

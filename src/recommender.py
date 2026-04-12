@@ -65,6 +65,11 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     score += energy_score
     reasons.append(f"energy closeness: {song['energy']:.2f} vs target {target_energy:.2f} (+{energy_score:.2f})")
 
+    if user_prefs.get("likes_acoustic") and "acousticness" in song:
+        acoustic_bonus = round(float(song["acousticness"]) * 0.5, 2)
+        score += acoustic_bonus
+        reasons.append(f"acoustic bonus: acousticness {float(song['acousticness']):.2f} (+{acoustic_bonus:.2f})")
+
     if not reasons:
         reasons.append("reasonable overall match")
 

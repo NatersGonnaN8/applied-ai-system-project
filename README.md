@@ -8,6 +8,8 @@ VibeMatch 1.0 is a small music recommender that scores a 10-song catalog against
 
 ## How The System Works
 
+Real-world recommenders like Spotify combine two strategies: **collaborative filtering** (if thousands of people who like what you like also love a certain song, you probably will too) and **content-based filtering** (matching the actual musical attributes of songs — tempo, energy, mood — to what a listener prefers). This simulation uses content-based filtering only. There is no user history, no crowd wisdom, and no machine learning. Instead, every song in the catalog is scored against a user's stated preferences using a simple set of rules, then ranked highest to lowest. The top results become the recommendations. It is a transparent, rule-based approximation of what real systems do at much larger scale with far more signals.
+
 ### Data Flow
 
 ```mermaid
@@ -136,4 +138,12 @@ Building this made clear how much a recommender depends on data coverage before 
 It also made visible how many implicit decisions shape a system that looks simple. Choosing to weight genre at 2x is a claim about human taste. Choosing to ignore valence is a claim that emotional positivity does not matter as much as energy. Real recommenders embed thousands of decisions like these, which is why being able to explain a recommendation — and audit where bias enters — matters so much.
 
 # Screenshots
-![alt text](image-1.png)
+
+### Profile 1 — High-Energy Pop
+![High-Energy Pop profile output](image-1.png)
+
+### Profile 2 — Chill Lofi / Acoustic
+![Chill Lofi / Acoustic profile output](image-2.png)
+
+### Profile 3 — Deep Intense Rock
+![Deep Intense Rock profile output](image.png)
