@@ -134,3 +134,6 @@ Read and complete `model_card.md`:
 Building this made clear how much a recommender depends on data coverage before the algorithm even matters. The scoring logic can be sound, but a 10-song catalog with no hip-hop or Latin music will systematically underserve users whose taste lives there — no weight adjustment fixes missing data.
 
 It also made visible how many implicit decisions shape a system that looks simple. Choosing to weight genre at 2x is a claim about human taste. Choosing to ignore valence is a claim that emotional positivity does not matter as much as energy. Real recommenders embed thousands of decisions like these, which is why being able to explain a recommendation — and audit where bias enters — matters so much.
+
+# Screenshots
+![alt text](image-1.png)
