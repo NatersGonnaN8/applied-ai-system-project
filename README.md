@@ -65,7 +65,7 @@ All songs are scored, sorted highest to lowest, and the top `k` are returned (de
 - **Genre over-prioritization** — a genre-matching song that misses on every other feature will still outscore a mood-matching song from a different genre. Users whose genre is rare in the catalog will be especially affected.
 - **Energy dominance among non-matches** — when genre and mood both miss, songs are differentiated only by energy closeness. Two very different tracks with similar energy levels will rank the same.
 - **Acoustic listeners favored** — `likes_acoustic=True` adds up to 0.5 bonus points, which can push an acoustic track ahead of a closer non-acoustic match. Users who do not like acoustic get no equivalent bonus.
-- **Catalog coverage gaps** — genres not in the catalog (classical, metal, country, reggae, k-pop, etc. were only added in Phase 2) will never earn a genre match for users who prefer them.
+- **Catalog depth gaps** — most genres have only one song, so after the top genre match the recommender has nothing left in that category. A rock fan, a k-pop fan, and a jazz fan all get the same thin fallback experience.
 
 ---
 
@@ -133,7 +133,7 @@ Read and complete `model_card.md`:
 
 [**Model Card**](model_card.md)
 
-Building this made clear how much a recommender depends on data coverage before the algorithm even matters. The scoring logic can be sound, but a 10-song catalog with no hip-hop or Latin music will systematically underserve users whose taste lives there — no weight adjustment fixes missing data.
+Building this made clear how much a recommender depends on data coverage before the algorithm even matters. The scoring logic can be sound, but a catalog with only one song per genre will systematically underserve users whose taste lives outside the most-represented styles — no weight adjustment fixes missing data.
 
 It also made visible how many implicit decisions shape a system that looks simple. Choosing to weight genre at 2x is a claim about human taste. Choosing to ignore valence is a claim that emotional positivity does not matter as much as energy. Real recommenders embed thousands of decisions like these, which is why being able to explain a recommendation — and audit where bias enters — matters so much.
 
