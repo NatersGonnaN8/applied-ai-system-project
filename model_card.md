@@ -6,7 +6,13 @@
 
 ---
 
-## 2. Intended Use
+## 2. Goal / Task
+
+Given a user's preferred genre, mood, energy level, and acoustic preference, suggest the top 5 songs from the catalog that best match those preferences. Each suggestion comes with a plain-language explanation of why it was chosen.
+
+---
+
+## 3. Intended and Non-Intended Use
 
 VibeMatch suggests songs from a small catalog based on a user's preferred genre, mood, and energy level. It also optionally favors acoustic-leaning tracks for users who prefer that sound.
 
@@ -16,7 +22,7 @@ This system is built for classroom exploration only. It assumes the user can exp
 
 ---
 
-## 3. How the Model Works
+## 4. Algorithm Summary
 
 Every song in the catalog gets a score based on how well it matches what the user told us they like. The scoring works like this:
 
@@ -29,7 +35,7 @@ After every song is scored, they are ranked highest to lowest and the top result
 
 ---
 
-## 4. Data
+## 5. Data Used
 
 The catalog contains 18 songs stored in `data/songs.csv`. Each song has the following attributes: title, artist, genre, mood, energy (0 to 1), tempo in BPM, valence (musical positivity, 0 to 1), danceability (0 to 1), and acousticness (0 to 1).
 
@@ -42,7 +48,7 @@ Some gaps remain. The mood vocabulary still lacks nuanced states like "nostalgic
 
 ---
 
-## 5. Strengths
+## 6. Strengths
 
 The system works best for users whose taste aligns with the most common entries in the catalog — particularly pop and lofi listeners. A user who says they love pop, want happy vibes, and have high energy will reliably surface "Sunrise City" first, which is genuinely the closest match by every relevant attribute.
 
@@ -52,7 +58,7 @@ The energy-closeness calculation is smooth rather than binary. A song does not h
 
 ---
 
-## 6. Limitations and Bias
+## 7. Observed Behavior / Biases
 
 Genre is weighted twice as heavily as mood and significantly more than energy. This means a genre-matching song with a mismatched mood will almost always outrank a mood-matching song in a different genre — even when the user might actually prefer the mood match. The weight choice is a design assumption, not a measured preference.
 
@@ -64,7 +70,7 @@ The catalog itself reflects a narrow slice of musical culture. If most of the so
 
 ---
 
-## 7. Evaluation
+## 8. Evaluation Process
 
 Three user profiles were tested manually:
 
@@ -83,7 +89,7 @@ The two automated tests (sorting correctness and explanation non-emptiness) both
 
 ---
 
-## 8. Future Work
+## 9. Ideas for Improvement
 
 - **Incorporate valence and danceability** into scoring. A user who wants to dance should get danceable songs, even if the genre or mood label is slightly off.
 - **Add user weighting controls** so a user can say "genre matters most to me" or "I really care about energy" and the system adjusts its weights accordingly.
@@ -93,7 +99,7 @@ The two automated tests (sorting correctness and explanation non-emptiness) both
 
 ---
 
-## 9. Personal Reflection
+## 10. Personal Reflection
 
 **Biggest learning moment:** How much a recommender depends on data coverage before the algorithm even matters. The scoring logic can be sound, but a catalog with only one rock song will systemically underserve rock listeners regardless of how well the weights are tuned. No weight adjustment fixes missing data.
 

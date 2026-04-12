@@ -2,7 +2,7 @@
 
 ## Project Summary
 
-VibeMatch 1.0 is a small music recommender that scores a 10-song catalog against a user's stated preferences — favorite genre, favorite mood, target energy level, and whether they like acoustic-sounding music. It ranks every song by score and returns the top results along with a plain-language explanation for each recommendation.
+VibeMatch 1.0 is a small music recommender that scores an 18-song catalog against a user's stated preferences — favorite genre, favorite mood, target energy level, and whether they like acoustic-sounding music. It ranks every song by score and returns the top results along with a plain-language explanation for each recommendation.
 
 ---
 
@@ -106,7 +106,7 @@ You can add more tests in `tests/test_recommender.py`.
 ## Experiments You Tried
 
 **Experiment 1 — Genre weight vs. mood weight**
-With genre at +2.0 and mood at +1.0, a genre match dominates. A pop/sad song outscores a jazz/happy song for a pop/happy user. Lowering genre weight to +1.0 made the rankings feel less decisive — ties became more common in a 10-song catalog.
+With genre at +2.0 and mood at +1.0, a genre match dominates. A pop/sad song outscores a jazz/happy song for a pop/happy user. Lowering genre weight to +1.0 made the rankings feel less decisive — ties became more common because most genres only have one song in the catalog.
 
 **Experiment 2 — Adding the acoustic bonus**
 Without the acoustic bonus, a chill/lofi user received the same top results whether or not they preferred acoustic. Adding the `likes_acoustic` flag meaningfully separated acoustic lofi tracks from electronic ones for users who care.
@@ -120,7 +120,7 @@ Without the acoustic bonus, a chill/lofi user received the same top results whet
 
 ## Limitations and Risks
 
-- The catalog has only 10 songs. Users in underrepresented genres (hip-hop, R&B, classical, Latin) will never get a genre match.
+- The catalog has 18 songs but most genres appear only once — users outside pop and lofi will get a good #1 match and then thin, energy-only fallbacks.
 - Valence, danceability, and tempo are ignored — the system cannot distinguish a high-energy song that feels joyful from one that feels aggressive.
 - Genre is weighted twice as heavily as mood, which is an assumption that may not hold for all users.
 - The system treats all users as having a single, stable preference. It cannot model a user who wants variety or whose taste changes by context.
