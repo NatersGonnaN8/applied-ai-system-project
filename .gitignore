@@ -13,3 +13,12 @@ venv/
 
 # Pytest cache
 .pytest_cache/
+
+# Environment variables (never commit secrets)
+.env
+
+# Loom script (local only, not for submission)
+loom_script.md
+
+# Log files
+logs/*.log
